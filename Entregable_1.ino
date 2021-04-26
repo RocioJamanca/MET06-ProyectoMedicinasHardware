@@ -21,4 +21,5 @@ void setup (){
 
 void loop(){
   read_sensor();
+ 
 }

@@ -1,5 +1,4 @@
 #include "DHT.h"          // DHT & AM2302 library
-
 DHT dht(DHTPIN, DHTTYPE);   // LED pins
 unsigned long previousMillisSensor = 0;   
 

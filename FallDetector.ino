@@ -1,3 +1,4 @@
+// Fall Detector, check if someone has fallen
 
 ICACHE_RAM_ATTR void checkFall(){
   int upperSensor = digitalRead(PRESENCEPIN2);
