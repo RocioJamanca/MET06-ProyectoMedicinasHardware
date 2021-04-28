@@ -1,0 +1,126 @@
+  #include <Adafruit_NeoPixel.h>
+  #include <Servo.h>
+  
+  #define BUTTON_HIGH   4   
+  #define BUTTON_LOW   12 
+  #define BUTTON_EMERGENCY 14 
+  #define PIXEL_PIN    5   
+  #define PIXEL_COUNT 4   
+  #define servoPin 2
+  
+  Servo myservo;
+  int angle =0;
+  int mov = 10;
+  int back = 170;
+  int sttop = 90;
+  
+  // Parameter 1 = number of pixels in strip,  neopixel stick has 8
+  // Parameter 2 = pin number (most are valid)
+  // Parameter 3 = pixel type flags, add together as needed:
+  //   NEO_RGB     Pixels are wired for RGB bitstream
+  //   NEO_GRB     Pixels are wired for GRB bitstream, correct for neopixel stick
+  //   NEO_KHZ400  400 KHz bitstream (e.g. FLORA pixels)
+  //   NEO_KHZ800  800 KHz bitstream (e.g. High Density LED strip), correct for neopixel stick
+  Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXEL_COUNT, PIXEL_PIN, NEO_GRB + NEO_KHZ800);
+  
+  bool oldState = HIGH;
+  bool negate = false;
+  int Stats = 0;
+
+
+  void setup() {
+    pinMode(BUTTON_HIGH, INPUT_PULLUP);
+    pinMode(BUTTON_LOW, INPUT_PULLUP);
+    pinMode(BUTTON_EMERGENCY, INPUT_PULLUP);
+    myservo.attach(servoPin);
+    strip.begin();
+    strip.show(); // Initialize all pixels to 'off'
+    myservo.write(90);
+  }
+
+  void loop() {
+    // Get current button state.
+    bool newState = digitalRead(BUTTON_HIGH);
+    bool newState2 = digitalRead(BUTTON_LOW);
+    bool newState3 = digitalRead(BUTTON_EMERGENCY);
+    
+    if (newState == LOW && oldState == HIGH) {
+      delay(20);
+      newState = digitalRead(BUTTON_HIGH);
+      if (newState == LOW) {
+      negate = false;
+        Stats++;
+        if (Stats > 4)
+          Stats=4;
+        StatsMachine(Stats);
+      }
+    } else if (newState2 == LOW && oldState == HIGH) {
+      delay(20);
+      newState = digitalRead(BUTTON_LOW);
+      if (newState2 == LOW) {
+        negate = true;
+        Stats--;
+        if (Stats < 0)
+          Stats=0;
+        StatsMachine(Stats);
+      }
+    } else if (newState3 == LOW && oldState == HIGH) {
+      delay(20);
+      newState = digitalRead(BUTTON_EMERGENCY);
+      if (newState3 == LOW) {
+        negate = true;
+        StatsMachine(0);
+      }
+    }
+    
+    oldState = newState;
+    oldState = newState2;
+    oldState = newState3;
+  }
+  
+  
+  void StatsMachine(int i) {
+    int movv = mov;
+    if (negate){
+      movv = back;
+    }
+    switch(i){
+      case 0: colorWipe(strip.Color(0, 0, 0), 50);    // Black/off
+              myservo.write(movv);
+              delay(500);
+              myservo.write(sttop);
+              break;
+      case 1: colorWipe(strip.Color(0, 255, 0), 50);  // Green
+              myservo.write(movv);
+              delay(500);
+              myservo.write(sttop);
+              break;    
+      case 2: colorWipe(strip.Color(255, 255, 0), 50);  // Yellow
+              myservo.write(movv);
+              delay(500);
+              myservo.write(sttop);
+              break;    
+      case 3: colorWipe(strip.Color(255, 165, 0), 50);  // Orange
+              myservo.write(movv);
+              delay(500);
+              myservo.write(sttop);
+              break;       
+      case 4: colorWipe(strip.Color(255, 0, 0), 50);  // Red
+              myservo.write(movv);
+              delay(500);
+              myservo.write(sttop);
+              break;
+  
+    }
+  }
+  
+  
+  // Fill the dots one after the other with a color
+  void colorWipe(uint32_t c, uint8_t wait) {
+    for(uint16_t i=0; i<strip.numPixels(); i++) {
+      strip.setPixelColor(i, c);
+      strip.show();
+      //delay(wait);
+
+    }
+  }
