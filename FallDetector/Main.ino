@@ -10,9 +10,9 @@
 #define WIFI_SSID "" ////////////////////AQUI VA EL WIFI/////////////////
 #define WIFI_PASSWORD ""    ////////////////////PASSWORD/////////////////
 
-#define API_KEY "AIzaSyD_pK8vOIPqWIFSv3LE21JXJZCI0nfMh1o" //////////////COPIAR TAL CUAL///////////////////////
+#define API_KEY "AIzaSyD_pK8vOIPqWIFSv3LE21JXJZCI0nfMh1o"
 #define DATABASE_SECRET "DATABASE_SECRET"
-#define USER_EMAIL "prova1@gmail.com"   
+#define USER_EMAIL "anna@gmail.com"   
 #define USER_PASSWORD "123456"
 unsigned long dataMillis = 0;
 int count = 0;
@@ -82,23 +82,13 @@ FirebaseConfig config;
 }
 
 void loop(){
+  read_sensor();
   if (millis() - dataMillis > 1000 && Firebase.ready())
-    {   dataMillis = millis();
-        String pathLED = "/UsersData/";
-        pathLED += auth.token.uid.c_str(); //<- user uid of current user that sign in with Emal/Password
-        pathLED += "/dades/int";
-        Firebase.RTDB.getInt(&fbdo, pathLED.c_str());
-        int state_fb = fbdo.intData();
-        Serial.printf("ns: %d\n\n", ns);
-
-        pathLED = "/UsersData/";
-        pathLED += auth.token.uid.c_str(); //<- user uid of current user that sign in with Emal/Password
-        pathLED += "/dades/int";
-        Firebase.RTDB.getInt(&fbdo, pathLED.c_str());
-        int lluminositat_fb = fbdo.intData();
-        Serial.printf("ns: %d\n\n", ns);
-        if(ns != Stats){
-                 read_sensor();
+    {    Serial.printf("State: %d\n\n", i);
+      String pathLED = "/UsersData/";
+       pathLED += auth.token.uid.c_str(); //<- user uid of current user that sign in with Emal/Password
+       pathLED += "/dades/int";// (variar el valor int per el que recuperem a android--> sens, fall, humi
+      Firebase.RTDB.setInt(&fbdo, pathLED.c_str(), i);
         }
     }     
 }
