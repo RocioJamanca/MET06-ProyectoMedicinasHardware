@@ -189,7 +189,7 @@ String url = "/fcm/send";
     client.print(data);
 
     Serial.println("POST /fcm/send HTTP/1.1");
-    Serial.println("Authorization: key=AAAA5DxBfVI:APA91bHRopXz-kNb7W5-AdxOw1F4ChSqJjw9YPs00HkymE6xCO4kx3ACVoziJ-Wld-PtG84yLvgwe76ttOgyAWKm8zdZ6s5Jb72dZzcNmezBDaG_WoQORJ4etHF5t_O6q_fKljL6BXc8");
+    Serial.println("Authorization: key="Add here the key");
     Serial.println("Content-Type: application/json");
     Serial.println("Host: fcm.googleapis.com");
     Serial.print("Content-Length: ");
